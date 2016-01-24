@@ -40,7 +40,7 @@ Some lessons learnt during the porting process:
 * a minus sign here and there can screw up **a lot** of projections/translations
 
 Development started on 4 January and completed with the first release on Github on 24th January with squashed/cleaned up commits.
-See also [my blog post about WolfenGo initial release]().
+See also [my blog post about WolfenGo initial release](https://medium.com/where-do-we-go-now/wolfengo-a-wolfenstein-3d-clone-in-go-6872af12469d).
 
 # Map format
 
