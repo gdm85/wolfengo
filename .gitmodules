@@ -1,0 +1,9 @@
+[submodule "vendor/github.com/go-gl/gl"]
+	path = vendor/github.com/go-gl/gl
+	url = https://github.com/go-gl/gl
+[submodule "vendor/golang.org/x/image"]
+	path = vendor/golang.org/x/image
+	url = https://github.com/golang/image/
+[submodule "vendor/github.com/go-gl/glfw"]
+	path = vendor/github.com/go-gl/glfw
+	url = https://github.com/go-gl/glfw
