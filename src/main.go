@@ -30,7 +30,7 @@ import (
 )
 
 const (
-	version        = "0.1.0"
+	version        = "0.1.1"
 	debugGL        = true         // extended debugging of GL calls
 	printFPS       = true         // print FPS count every second
 	debugLevelTest = false        // will load 'levelTest.map'
@@ -64,7 +64,11 @@ func debugCb(
 	message string,
 	userParam unsafe.Pointer) {
 
-	panic(fmt.Sprintf("[GL_DEBUG] source %d gltype %d id %d severity %d length %d: %s\n", source, gltype, id, severity, length, message))
+	msg := fmt.Sprintf("[GL_DEBUG] source %d gltype %d id %d severity %d length %d: %s", source, gltype, id, severity, length, message)
+	if severity == gl.DEBUG_SEVERITY_HIGH {
+		panic(msg)
+	}
+	fmt.Fprintln(os.Stderr, msg)
 }
 
 func main() {
