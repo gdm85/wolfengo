@@ -26,7 +26,7 @@ There are some constants in `main.go` that can be toggled to enable further debu
 
 # Controls
 
-Use `A`,`W`,`S`,`D` to move the player around and `E` to open doors; by clicking in the game window you will enable free mouse look, that can be disabled with `ESC`.
+Use `W`,`A`,`S`,`D` to move the player around and `E` to open doors; by clicking in the game window you will enable free mouse look, that can be disabled with `ESC`.
 
 # History
 
@@ -46,7 +46,7 @@ Some lessons learnt during the porting process:
 * a minus sign here and there can screw up **a lot** of projections/translations
 
 Development started on 4 January and completed with the first release on Github on 24th January with squashed/cleaned up commits.
-See also [my blog post about WolfenGo initial release](https://medium.com/where-do-we-go-now/wolfengo-a-wolfenstein-3d-clone-in-go-6872af12469d).
+See also [my blog post about WolfenGo initial release](https://medium.com/where-do-we-go-now/wolfengo-a-wolfenstein-3d-clone-in-go-6872af12469d) for extras about the development/porting process.
 
 # Map format
 
