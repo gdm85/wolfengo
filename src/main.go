@@ -34,6 +34,7 @@ const (
 	debugGL        = true         // extended debugging of GL calls
 	printFPS       = true         // print FPS count every second
 	debugLevelTest = false        // will load 'levelTest.map'
+	debugTexCoords = true         // will print first 100 texture coordinates
 	frameCap       = float64(250) // cap max framerate to this number of FPS
 )
 

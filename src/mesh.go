@@ -17,7 +17,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 */
 package main
 
-import "github.com/go-gl/gl/v2.1/gl"
+import (
+	"fmt"
+
+	"github.com/go-gl/gl/v2.1/gl"
+)
 
 type Mesh struct {
 	vbo, ibo uint32
@@ -54,6 +58,10 @@ func (m *Mesh) addVertices(vertices []*Vertex, indices []int32, calcNormals bool
 
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, m.ibo)
 	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indices)*4, gl.Ptr(indices), gl.STATIC_DRAW)
+
+	if debugTexCoords {
+		fmt.Println("addVertices(", fb, ",", indices, ")")
+	}
 }
 
 func (m Mesh) draw() {
