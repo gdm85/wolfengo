@@ -70,8 +70,8 @@ func (m Mesh) draw() {
 	gl.VertexAttribPointer(1, 2, gl.FLOAT, false, VertexSize*4, gl.PtrOffset(12))
 	gl.VertexAttribPointer(2, 3, gl.FLOAT, false, VertexSize*4, gl.PtrOffset(20))
 
-	if m.vbo == 0 {
-		panic("attempt to set element array buffer with VBO=0")
+	if m.ibo == 0 {
+		panic("attempt to set element array buffer with IBO=0")
 	}
 
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, m.ibo)
