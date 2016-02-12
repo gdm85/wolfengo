@@ -20,11 +20,13 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/go-gl/gl/v2.1/gl"
 	"io/ioutil"
 	"strings"
-
-	"github.com/go-gl/gl/v2.1/gl"
+	"unsafe"
 )
+
+import "C"
 
 type Shader struct {
 	program  uint32
@@ -100,8 +102,10 @@ func (s *Shader) addProgram(text string, typ uint32) error {
 	if shader == 0 {
 		return errors.New("could not find valid memory location when adding shader")
 	}
-	cStr := gl.Str(text + "\000")
-	gl.ShaderSource(shader, 1, &cStr, nil)
+
+	cStr := C.CString(text)
+	u8 := (*uint8)(unsafe.Pointer(cStr))
+	gl.ShaderSource(shader, 1, &u8, nil)
 	gl.CompileShader(shader)
 
 	var result int32

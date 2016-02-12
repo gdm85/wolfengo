@@ -105,7 +105,8 @@ under GNU/GPLv2 license.`+"\n", version)
 	fmt.Println(gl.GoStr(gl.GetString(gl.VERSION)))
 
 	if debugGL {
-		gl.DebugMessageCallback(debugCb, unsafe.Pointer(nil))
+		// still causes crash so commented out:
+		//gl.DebugMessageCallback(debugCb, unsafe.Pointer(nil))
 		gl.Enable(gl.DEBUG_OUTPUT)
 	}
 
