@@ -104,7 +104,8 @@ under GNU/GPLv2 license.`+"\n", version)
 
 	fmt.Println(gl.GoStr(gl.GetString(gl.VERSION)))
 
-	if debugGL {
+	// temporary workaround until https://github.com/go-gl/gl/issues/40 is addressed
+	if debugGL && runtime.GOOS != "darwin" {
 		gl.DebugMessageCallback(debugCb, unsafe.Pointer(nil))
 		gl.Enable(gl.DEBUG_OUTPUT)
 	}
