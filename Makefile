@@ -1,7 +1,7 @@
 build:
 	mkdir -p bin .gopath
 	if [ ! -L .gopath/src ]; then ln -s "$(CURDIR)/vendor" .gopath/src; fi
-	cd src && GOBIN="../bin/" GOPATH="$(CURDIR)/.gopath" go install && mv ../bin/src ../bin/wolfengo
+	cd src && GOBIN="$(CURDIR)/bin/" GOPATH="$(CURDIR)/.gopath" go install && mv ../bin/src ../bin/wolfengo
 
 errcheck:
 	mkdir -p bin .gopath
@@ -15,4 +15,4 @@ test:
 
 all: build errcheck test
 
-.PHONY: build errcheck test
+.PHONY: all build errcheck test
