@@ -50,7 +50,9 @@ func (s *Shader) bind() {
 }
 
 func (s *Shader) addUniform(uniformName string) error {
-	uniformLocation := gl.GetUniformLocation(s.program, gl.Str(uniformName+"\000"))
+	csource, free := gl.Strs(uniformName+"\000")
+	defer free()
+	uniformLocation := gl.GetUniformLocation(s.program, *csource)
 
 	if uniformLocation == -1 {
 		return fmt.Errorf("could not find uniform: %s", uniformName)
@@ -64,19 +66,21 @@ func (s *Shader) getProgramInfoLog(context string) error {
 	var logLength int32
 	gl.GetProgramiv(s.program, gl.INFO_LOG_LENGTH, &logLength)
 
-	log := strings.Repeat("\x00", int(logLength+1))
-	gl.GetProgramInfoLog(s.program, logLength, nil, gl.Str(log))
+	cLog, free := gl.Strs(strings.Repeat("\x00", int(logLength+1)))
+	defer free()
+	gl.GetProgramInfoLog(s.program, logLength, nil, *cLog)
 
-	return fmt.Errorf("%s: %s", context, log)
+	return fmt.Errorf("%s: %s", context, cLog)
 }
 
 func (s *Shader) getShaderInfoLog(shader uint32, context string) error {
 	var logLength int32
 	gl.GetShaderiv(shader, gl.INFO_LOG_LENGTH, &logLength)
 
-	log := strings.Repeat("\x00", int(logLength+1))
-	gl.GetShaderInfoLog(shader, logLength, nil, gl.Str(log))
-	return fmt.Errorf("%s: %s", context, log)
+	cLog, free := gl.Strs(strings.Repeat("\x00", int(logLength+1)))
+	defer free()
+	gl.GetShaderInfoLog(shader, logLength, nil, *cLog)
+	return fmt.Errorf("%s: %s", context, cLog)
 }
 
 func (s *Shader) compile() error {
@@ -100,8 +104,9 @@ func (s *Shader) addProgram(text string, typ uint32) error {
 	if shader == 0 {
 		return errors.New("could not find valid memory location when adding shader")
 	}
-	cStr := gl.Str(text + "\000")
-	gl.ShaderSource(shader, 1, &cStr, nil)
+	cStr, free := gl.Strs(text + "\000")
+	defer free()
+	gl.ShaderSource(shader, 1, cStr, nil)
 	gl.CompileShader(shader)
 
 	var result int32
