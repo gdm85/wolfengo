@@ -9,6 +9,13 @@ Pull requests are welcome.
 - [ ] fix remaining bugs
 - [ ] add audio effects
 
+# Build Dependencies
+
+WolfenGo uses glfw C bindings, which in turn need some Linux userland headers to be installed. Example of dependencies installation on a Debian-based system:
+```
+apt-get install libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev
+```
+
 # Building
 
 ```
