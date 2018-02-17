@@ -87,13 +87,25 @@ func (s *Shader) compile() error {
 	gl.LinkProgram(s.program)
 	var result int32
 	gl.GetProgramiv(s.program, gl.LINK_STATUS, &result)
-	if result == 0 {
-		return s.getProgramInfoLog("shader compilation error")
+	if result == gl.FALSE {
+		var logLength int32
+		gl.GetProgramiv(s.program, gl.INFO_LOG_LENGTH, &logLength)
+
+		log := strings.Repeat("\x00", int(logLength+1))
+		gl.GetProgramInfoLog(s.program, logLength, nil, gl.Str(log))
+
+		return fmt.Errorf("failed to link program %s", log)
 	}
 	gl.ValidateProgram(s.program)
 	gl.GetProgramiv(s.program, gl.VALIDATE_STATUS, &result)
-	if result == 0 {
-		return s.getProgramInfoLog("shader compilation error: %s")
+	if result == gl.FALSE {
+		var logLength int32
+		gl.GetProgramiv(s.program, gl.INFO_LOG_LENGTH, &logLength)
+
+		log := strings.Repeat("\x00", int(logLength+1))
+		gl.GetProgramInfoLog(s.program, logLength, nil, gl.Str(log))
+
+		return fmt.Errorf("failed to compile program %s", log)
 	}
 
 	return nil
@@ -111,8 +123,14 @@ func (s *Shader) addProgram(text string, typ uint32) error {
 
 	var result int32
 	gl.GetShaderiv(shader, gl.COMPILE_STATUS, &result)
-	if result == 0 {
-		return s.getShaderInfoLog(shader, "get shader error")
+	if result == gl.FALSE {
+		var logLength int32
+		gl.GetShaderiv(shader, gl.INFO_LOG_LENGTH, &logLength)
+
+		log := strings.Repeat("\x00", int(logLength+1))
+		gl.GetShaderInfoLog(shader, logLength, nil, gl.Str(log))
+
+		return fmt.Errorf("failed to compile %v: %v", cStr, log)
 	}
 
 	gl.AttachShader(s.program, shader)
