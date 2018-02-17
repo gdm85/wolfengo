@@ -21,7 +21,7 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/go-gl/gl/v2.1/gl"
+	"github.com/go-gl/gl/v4.1-core/gl"
 )
 
 const (
@@ -70,11 +70,11 @@ func getBasicShader() (*Shader, error) {
 			return nil, err
 		}
 
-		err = _basicShader.addProgramFromFile("basicVertex120.vs", gl.VERTEX_SHADER)
+		err = _basicShader.addProgramFromFile("basicVertex.vs", gl.VERTEX_SHADER)
 		if err != nil {
 			return nil, err
 		}
-		err = _basicShader.addProgramFromFile("basicFragment120.fs", gl.FRAGMENT_SHADER)
+		err = _basicShader.addProgramFromFile("basicFragment.fs", gl.FRAGMENT_SHADER)
 		if err != nil {
 			return nil, err
 		}
