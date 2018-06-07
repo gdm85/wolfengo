@@ -298,9 +298,9 @@ func (l *Level) checkIntersections(lineStart, lineEnd Vector2f, hurtMonsters boo
 		for _, monster := range l.monsters {
 			monsterPos3f := monster.transform.translation
 			monsterPos2f := Vector2f{monsterPos3f.X, monsterPos3f.Z}
-			collisionVector := lineIntersectRect(lineStart, lineEnd, monsterPos2f, Vector2f{_defaultMonster.size, _defaultMonster.size})
+			collisionVector := lineIntersectRect(lineStart, lineEnd, monsterPos2f, defaultMonsterSize)
 
-			nearestMonsterIntersect := findNearestVector2f(nearestMonsterIntersect, collisionVector, lineStart)
+			nearestMonsterIntersect = findNearestVector2f(nearestMonsterIntersect, collisionVector, lineStart)
 
 			if nearestMonsterIntersect == collisionVector {
 				nearestMonster = monster

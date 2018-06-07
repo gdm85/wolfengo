@@ -42,7 +42,6 @@ Aside from some dead/unused code that I have dropped and bugs inadvertently intr
 Notable differences:
 * map format has been changed, see relative section
 * enabled VSync
-* player does not seem able to shoot monsters, couldn't figure out where's the bug
 * although extra shaders are included, they are not used by default in any way
 
 Although [mathgl](https://github.com/go-gl/mathgl) could have been used for the 3D math/raycast operations, I preferred to keep the simpler original structures.

@@ -71,6 +71,7 @@ var (
 		damageMin: 5,
 		damageMax: 30,
 	}
+	defaultMonsterSize = Vector2f{_defaultMonster.size, _defaultMonster.size}
 )
 
 func init() {

@@ -50,7 +50,7 @@ func (s *Shader) bind() {
 }
 
 func (s *Shader) addUniform(uniformName string) error {
-	csource, free := gl.Strs(uniformName+"\000")
+	csource, free := gl.Strs(uniformName + "\000")
 	defer free()
 	uniformLocation := gl.GetUniformLocation(s.program, *csource)
 
