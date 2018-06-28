@@ -35,6 +35,8 @@ There are some constants in `main.go` that can be toggled to enable further debu
 
 Use `W`,`A`,`S`,`D` to move the player around and `E` to open doors; by clicking in the game window you will enable free mouse look, that can be disabled with `ESC`.
 
+Pressing `Q` causes the game to quit, as it does closing the game window itself.
+
 # History
 
 Aside from some dead/unused code that I have dropped and bugs inadvertently introduced in the porting process, this is my ([gdm85](https://github.com/gdm85)) literal conversion of the [Java Wolfenstein3D clone by BennyQBD](https://github.com/BennyQBD/Wolfenstein3DClone); feel free to spin up the Java original version to check how identical and indistinguishable the two are.

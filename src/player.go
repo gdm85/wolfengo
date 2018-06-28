@@ -190,6 +190,9 @@ func (p *Player) input() error {
 	if Window.GetKey(glfw.KeyD) == glfw.Press {
 		p.movementVector = p.movementVector.add(p.camera.getRight())
 	}
+	if Window.GetKey(glfw.KeyQ) == glfw.Press {
+		Window.SetShouldClose(true)
+	}
 
 	p.camera.mouseLook()
 

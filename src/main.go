@@ -124,8 +124,6 @@ under GNU/GPLv2 license.`+"\n", version)
 	gl.Enable(gl.DEPTH_CLAMP)
 	gl.Enable(gl.TEXTURE_2D)
 
-	isRunning := false
-
 	// load all assets
 	_, err = getBasicShader()
 	if err != nil {
@@ -151,9 +149,6 @@ under GNU/GPLv2 license.`+"\n", version)
 		fatalError(err)
 	}
 
-	// GAME STARTS
-	isRunning = true
-
 	var frames uint64
 	var frameCounter time.Duration
 
@@ -161,7 +156,8 @@ under GNU/GPLv2 license.`+"\n", version)
 	lastTime := time.Now()
 	var unprocessedTime time.Duration
 
-	for isRunning {
+	// GAME STARTS
+	for {
 		var render bool
 
 		startTime := time.Now()
@@ -176,7 +172,7 @@ under GNU/GPLv2 license.`+"\n", version)
 
 			unprocessedTime -= frameTime
 			if Window.ShouldClose() {
-				isRunning = false
+				goto Exit
 			}
 			G.timeDelta = frameTime.Seconds()
 
@@ -200,7 +196,6 @@ under GNU/GPLv2 license.`+"\n", version)
 		}
 
 		if render {
-			//TODO: Stencil Buffer
 			gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 			G.render()
@@ -211,5 +206,6 @@ under GNU/GPLv2 license.`+"\n", version)
 		}
 	}
 
+Exit:
 	Window.Destroy()
 }
