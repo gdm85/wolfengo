@@ -63,37 +63,36 @@ func (s *Shader) addUniform(uniformName string) error {
 }
 
 func (s *Shader) getProgramInfoLog(context string) error {
-	var logLength int32
-	gl.GetProgramiv(s.program, gl.INFO_LOG_LENGTH, &logLength)
+		var logLength int32
+		gl.GetProgramiv(s.program, gl.INFO_LOG_LENGTH, &logLength)
 
-	cLog, free := gl.Strs(strings.Repeat("\x00", int(logLength+1)))
-	defer free()
-	gl.GetProgramInfoLog(s.program, logLength, nil, *cLog)
+		log := strings.Repeat("\x00", int(logLength+1))
+		gl.GetProgramInfoLog(s.program, logLength, nil, gl.Str(log))
 
-	return fmt.Errorf("%s: %s", context, cLog)
+		return fmt.Errorf("%s: %s", context, log)
 }
 
 func (s *Shader) getShaderInfoLog(shader uint32, context string) error {
 	var logLength int32
 	gl.GetShaderiv(shader, gl.INFO_LOG_LENGTH, &logLength)
 
-	cLog, free := gl.Strs(strings.Repeat("\x00", int(logLength+1)))
-	defer free()
-	gl.GetShaderInfoLog(shader, logLength, nil, *cLog)
-	return fmt.Errorf("%s: %s", context, cLog)
+	log := strings.Repeat("\x00", int(logLength+1))
+	gl.GetShaderInfoLog(shader, logLength, nil, gl.Str(log))
+
+	return fmt.Errorf("%s: %s", context, log)
 }
 
 func (s *Shader) compile() error {
 	gl.LinkProgram(s.program)
 	var result int32
 	gl.GetProgramiv(s.program, gl.LINK_STATUS, &result)
-	if result == 0 {
-		return s.getProgramInfoLog("shader compilation error")
+	if result == gl.FALSE {
+		return s.getProgramInfoLog("shader linking error")
 	}
 	gl.ValidateProgram(s.program)
 	gl.GetProgramiv(s.program, gl.VALIDATE_STATUS, &result)
-	if result == 0 {
-		return s.getProgramInfoLog("shader compilation error: %s")
+	if result == gl.FALSE {
+		return s.getProgramInfoLog("shader validation error")
 	}
 
 	return nil
@@ -111,8 +110,8 @@ func (s *Shader) addProgram(text string, typ uint32) error {
 
 	var result int32
 	gl.GetShaderiv(shader, gl.COMPILE_STATUS, &result)
-	if result == 0 {
-		return s.getShaderInfoLog(shader, "get shader error")
+	if result == gl.FALSE {
+		return s.getShaderInfoLog(shader, "shader compilation error")
 	}
 
 	gl.AttachShader(s.program, shader)
