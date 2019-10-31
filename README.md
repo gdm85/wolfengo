@@ -13,14 +13,12 @@ Pull requests are welcome.
 
 WolfenGo uses glfw C bindings, which in turn need some Linux userland headers to be installed. Example of dependencies installation on a Debian-based system:
 ```
-apt-get install libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev
+apt-get install libgl1-mesa-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libxxf86vm-dev
 ```
 
 # Building
 
 ```
-git submodule init
-git submodule update
 make
 ```
 

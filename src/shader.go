@@ -63,13 +63,13 @@ func (s *Shader) addUniform(uniformName string) error {
 }
 
 func (s *Shader) getProgramInfoLog(context string) error {
-		var logLength int32
-		gl.GetProgramiv(s.program, gl.INFO_LOG_LENGTH, &logLength)
+	var logLength int32
+	gl.GetProgramiv(s.program, gl.INFO_LOG_LENGTH, &logLength)
 
-		log := strings.Repeat("\x00", int(logLength+1))
-		gl.GetProgramInfoLog(s.program, logLength, nil, gl.Str(log))
+	log := strings.Repeat("\x00", int(logLength+1))
+	gl.GetProgramInfoLog(s.program, logLength, nil, gl.Str(log))
 
-		return fmt.Errorf("%s: %s", context, log)
+	return fmt.Errorf("%s: %s", context, log)
 }
 
 func (s *Shader) getShaderInfoLog(shader uint32, context string) error {
