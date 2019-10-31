@@ -6,7 +6,7 @@ Pull requests are welcome.
 
 ## Plan
 - [x] initial conversion
-- [ ] fix remaining bugs
+- [x] fix remaining bugs
 - [ ] add audio effects
 
 # Build Dependencies

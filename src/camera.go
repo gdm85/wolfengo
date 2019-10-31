@@ -1,5 +1,5 @@
 /* WolfenGo - https://github.com/gdm85/wolfengo
-Copyright (C) 2016 gdm85
+Copyright (C) 2016~2019 gdm85
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,9 +24,6 @@ type Camera struct {
 	forward Vector3f
 	up      Vector3f
 
-	// mouse look fields
-	mouseLocked      bool
-	oldPosition      Vector2f
 	mouseSensitivity float32
 
 	// originally static fields in Transform
@@ -45,24 +42,10 @@ func NewCamera(pos, forward, up Vector3f, mouseSensitivity float32) *Camera {
 	return &c
 }
 
-func (c *Camera) UnlockMouse() {
-	c.mouseLocked = false
-}
-
-func (c *Camera) LockMouse() {
-	x, y := Window.GetCursorPos()
-	c.oldPosition = Vector2f{float32(x), float32(y)}
-
-	c.mouseLocked = true
-}
-
-func (c *Camera) mouseLook() {
-	if !c.mouseLocked {
-		return
-	}
+func (c *Camera) mouseLook(oldPosition *Vector2f) {
 	x, y := Window.GetCursorPos()
 	newPosition := Vector2f{float32(x), float32(y)}
-	deltaPos := newPosition.sub(c.oldPosition)
+	deltaPos := newPosition.sub(*oldPosition)
 
 	rotY := deltaPos.X != 0
 	rotX := deltaPos.Y != 0
@@ -75,7 +58,7 @@ func (c *Camera) mouseLook() {
 	}
 
 	if rotY || rotX {
-		c.oldPosition = newPosition
+		*oldPosition = newPosition
 	}
 }
 

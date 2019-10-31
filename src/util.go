@@ -1,5 +1,5 @@
 /* WolfenGo - https://github.com/gdm85/wolfengo
-Copyright (C) 2016 gdm85
+Copyright (C) 2016~2019 gdm85
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

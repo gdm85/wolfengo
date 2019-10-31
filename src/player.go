@@ -1,5 +1,5 @@
 /* WolfenGo - https://github.com/gdm85/wolfengo
-Copyright (C) 2016 gdm85
+Copyright (C) 2016~2019 gdm85
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -159,13 +159,14 @@ func (p *Player) input() error {
 
 	if Window.GetKey(glfw.KeyEscape) == glfw.Press {
 		Window.SetInputMode(glfw.CursorMode, glfw.CursorNormal)
-		p.camera.UnlockMouse()
+		p.game.UnlockMouse()
 	}
 
+	// wait for left mouse click to lock the camera to the mouse
 	if Window.GetMouseButton(glfw.MouseButtonLeft) == glfw.Press {
-		if !p.camera.mouseLocked {
+		if !p.game.mouseLocked {
 			Window.SetInputMode(glfw.CursorMode, glfw.CursorDisabled)
-			p.camera.LockMouse()
+			p.game.LockMouse()
 		} else {
 			// shoot a bullet
 			lineStart := Vector2f{p.camera.pos.X, p.camera.pos.Z}
@@ -193,8 +194,9 @@ func (p *Player) input() error {
 	if Window.GetKey(glfw.KeyQ) == glfw.Press {
 		Window.SetShouldClose(true)
 	}
-
-	p.camera.mouseLook()
+	if p.game.mouseLocked {
+		p.camera.mouseLook(&p.game.oldPosition)
+	}
 
 	return nil
 }

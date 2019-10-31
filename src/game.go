@@ -1,5 +1,5 @@
 /* WolfenGo - https://github.com/gdm85/wolfengo
-Copyright (C) 2016 gdm85
+Copyright (C) 2016~2019 gdm85
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,6 +21,10 @@ type Game struct {
 	level     *Level
 	isRunning bool
 	levelNum  uint
+
+	// mouse look fields
+	oldPosition Vector2f
+	mouseLocked bool
 
 	timeDelta float64
 }
@@ -68,4 +72,15 @@ func (g *Game) loadNextLevel() error {
 	g.isRunning = true
 
 	return nil
+}
+
+func (g *Game) UnlockMouse() {
+	g.mouseLocked = false
+}
+
+func (g *Game) LockMouse() {
+	x, y := Window.GetCursorPos()
+	g.oldPosition = Vector2f{float32(x), float32(y)}
+
+	g.mouseLocked = true
 }

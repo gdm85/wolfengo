@@ -1,5 +1,5 @@
 /* WolfenGo - https://github.com/gdm85/wolfengo
-Copyright (C) 2016 gdm85
+Copyright (C) 2016~2019 gdm85
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ func debugCb(
 }
 
 func main() {
-	fmt.Printf(`WolfenGo v%s, Copyright (C) 2016 gdm85
+	fmt.Printf(`WolfenGo v%s, Copyright (C) 2016~2019 gdm85
 https://github.com/gdm85/wolfengo
 WolfenGo comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
