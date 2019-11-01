@@ -27,7 +27,7 @@ import (
 
 const (
 	gunOffset              = -0.0875
-	playerMouseSensitivity = 1.0 / 3.0
+	playerMouseSensitivity = 0.2
 )
 
 type Player struct {
