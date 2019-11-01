@@ -18,9 +18,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 */
 package main
 
-type VertexArray []*Vertex
-
-func verticesAsFloats(vertices VertexArray) []float32 {
+func verticesAsFloats(vertices []*Vertex) []float32 {
 	buffer := make([]float32, 0, len(vertices)*VertexSize)
 
 	for _, v := range vertices {
