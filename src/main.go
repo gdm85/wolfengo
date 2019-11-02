@@ -31,7 +31,7 @@ import (
 )
 
 const (
-	version        = "0.1.3"
+	version        = "0.1.4"
 	debugGL        = true         // extended debugging of GL calls
 	printFPS       = true         // print FPS count every second
 	debugLevelTest = false        // will load 'levelTest.map'
