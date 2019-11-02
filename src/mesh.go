@@ -102,7 +102,7 @@ func (m Mesh) calcNormals(vertices []*Vertex, indices []int32) {
 		vertices[i2].normal = vertices[i2].normal.add(normal)
 	}
 
-	for i := 0; i < len(vertices); i++ {
-		vertices[i].normal = vertices[i].normal.normalised()
+	for _, v := range vertices {
+		v.normal = v.normal.normalised()
 	}
 }

@@ -62,7 +62,7 @@ var (
 		offsetX: 0.0, // 0.05
 		offsetY: 0.0, // 0.01
 
-		moveSpeed: 1.0,
+		moveSpeed: 2.0,
 
 		size: 0.2,
 

@@ -49,7 +49,8 @@ var (
 		damageMin: 20,
 		damageMax: 60,
 		maxHealth: 100,
-		moveSpeed: 5.0,
+		// player is slightly faster than monsters
+		moveSpeed: 2.5,
 
 		size:          0.2,
 		shootDistance: 1000.0,

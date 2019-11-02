@@ -25,8 +25,8 @@ const (
 	doorHeight = 1
 	doorWidth  = 0.125
 	doorStart  = 0
-	timeToOpen = time.Duration(250) * time.Millisecond
-	closeDelay = time.Duration(2) * time.Second
+	timeToOpen = time.Duration(300) * time.Millisecond
+	closeDelay = time.Duration(3) * time.Second
 )
 
 var _defaultDoorMesh Mesh
