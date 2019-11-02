@@ -18,7 +18,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 */
 package main
 
-import "github.com/go-gl/gl/v2.1/gl"
+import "github.com/gdm85/wolfengo/src/gl"
 
 type Mesh struct {
 	vbo, ibo uint32

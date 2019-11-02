@@ -25,7 +25,7 @@ import (
 	_ "image/png"
 	"os"
 
-	"github.com/go-gl/gl/v2.1/gl"
+	"github.com/gdm85/wolfengo/src/gl"
 )
 
 type Texture struct {

@@ -24,7 +24,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/go-gl/gl/v2.1/gl"
+	"github.com/gdm85/wolfengo/src/gl"
 )
 
 type Shader struct {
@@ -84,6 +84,10 @@ func (s *Shader) getShaderInfoLog(shader uint32, context string) error {
 }
 
 func (s *Shader) compile() error {
+	var vao uint32
+	gl.GenVertexArrays(1, &vao)
+	gl.BindVertexArray(vao)
+
 	gl.LinkProgram(s.program)
 	var result int32
 	gl.GetProgramiv(s.program, gl.LINK_STATUS, &result)

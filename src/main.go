@@ -26,7 +26,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/go-gl/gl/v2.1/gl"
+	"github.com/gdm85/wolfengo/src/gl"
 	"github.com/go-gl/glfw/v3.1/glfw"
 )
 
@@ -72,6 +72,10 @@ func debugCb(
 	fmt.Fprintln(os.Stderr, msg)
 }
 
+// needed for some older hardware e.g. Intel HD graphics
+// notice that this suffix only changes a couple shaders, while the rest uses the 330 version
+var shaderVersion = "120"
+
 func main() {
 	fmt.Printf(`WolfenGo v%s, Copyright (C) 2016~2019 gdm85
 https://github.com/gdm85/wolfengo
@@ -85,8 +89,16 @@ under GNU/GPLv2 license.`+"\n", version)
 	defer glfw.Terminate()
 
 	// create a context and activate it
-	glfw.WindowHint(glfw.ContextVersionMajor, 2)
-	glfw.WindowHint(glfw.ContextVersionMinor, 1)
+	glfw.WindowHint(glfw.ContextVersionMajor, gl.RequestedContextVersionMajor)
+	glfw.WindowHint(glfw.ContextVersionMinor, gl.RequestedContextVersionMinor)
+	if gl.RequestedContextVersionMajor >= 3 {
+		// switch to version 330
+		shaderVersion = ""
+		glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
+		if gl.RequestedContextVersionMajor >= 2 {
+			glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
+		}
+	}
 	glfw.WindowHint(glfw.Resizable, glfw.False)
 	glfw.WindowHint(glfw.DoubleBuffer, glfw.True)
 	var err error
