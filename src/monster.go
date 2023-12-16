@@ -152,10 +152,10 @@ func (m *Monster) damage(amt int) {
 
 	m.health -= amt
 
-	if m.health <= 0 {
+	if m.health <= 0 && m.state != stateDying && m.state != stateDead {
 		m.state = stateDying
 		m.audio.play(SoundMonsterDeath, m.transform.translation)
-	} else {
+	} else if m.state != stateDying && m.state != stateDead {
 		variant := fmt.Sprintf("%s%d", SoundMonsterPainBase, random.Intn(SoundMonsterPainCount)+1)
 		m.audio.playIfFree(variant, m.transform.translation)
 	}
