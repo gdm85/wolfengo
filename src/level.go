@@ -245,7 +245,7 @@ func (l *Level) render() {
 	if debugHitboxes {
 		for _, monster := range l.monsters {
 			t := &Transform{
-				translation: Vector3f{monster.transform.translation.X, 0, monster.transform.translation.Z},
+				translation: Vector3f{monster.transform.translation.X - _defaultMonster.sizeX, 0, monster.transform.translation.Z - _defaultMonster.sizeX},
 				scale:       Vector3f{defaultMonsterSize.X, _defaultMonster.scale, defaultMonsterSize.Y},
 				game:        l.game,
 			}
@@ -334,7 +334,8 @@ func (l *Level) checkIntersections(lineStart, lineEnd Vector2f, hurtMonsters boo
 
 		for _, monster := range l.monsters {
 			monsterPos3f := monster.transform.translation
-			monsterPos2f := Vector2f{monsterPos3f.X, monsterPos3f.Z}
+			// Offset by half the hitbox size so the AABB is centered on the sprite
+			monsterPos2f := Vector2f{monsterPos3f.X - _defaultMonster.sizeX, monsterPos3f.Z - _defaultMonster.sizeX}
 			collisionVector := lineIntersectRect(lineStart, lineEnd, monsterPos2f, defaultMonsterSize)
 
 			nearestMonsterIntersect = findNearestVector2f(nearestMonsterIntersect, collisionVector, lineStart)

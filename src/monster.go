@@ -72,7 +72,7 @@ var (
 		damageMin: 5,
 		damageMax: 30,
 	}
-	defaultMonsterSize = Vector2f{_defaultMonster.size, _defaultMonster.size}
+	defaultMonsterSize Vector2f // initialized in init() after sizeX is computed
 )
 
 func init() {
@@ -82,6 +82,9 @@ func init() {
 	_defaultMonster.texMaxX = -1 - _defaultMonster.offsetX
 	_defaultMonster.texMinY = -_defaultMonster.offsetY
 	_defaultMonster.texMaxY = 1 - _defaultMonster.offsetY
+
+	// Full width of the sprite is 2*sizeX; use that as the AABB side length
+	defaultMonsterSize = Vector2f{_defaultMonster.sizeX * 2, _defaultMonster.sizeX * 2}
 }
 
 func (m *Object) initMonster() error {
