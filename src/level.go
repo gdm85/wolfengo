@@ -213,6 +213,7 @@ func (l *Level) update() error {
 			}
 		}
 		l.medkits = newMedkits
+		l.medkitsToRemove = nil
 	}
 
 	return nil
