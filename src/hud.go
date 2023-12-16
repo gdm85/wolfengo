@@ -34,7 +34,7 @@ type hudText struct {
 	imgH int
 }
 
-// HUD manages all screen-space overlays: health, level announcement, game over.
+// HUD manages all screen-space overlays: health, FPS, level announcement, game over.
 type HUD struct {
 	quadMesh  Mesh
 	whiteMat  *Material
@@ -43,6 +43,9 @@ type HUD struct {
 
 	health    *hudText
 	healthVal int
+
+	fps    *hudText
+	fpsVal uint64
 
 	levelAnnounce *hudText
 	levelHideAt   time.Time
@@ -107,6 +110,14 @@ func (h *HUD) showGameOver() {
 	}
 }
 
+func (h *HUD) setFPS(n uint64) {
+	if h.fps != nil && h.fpsVal == n {
+		return
+	}
+	h.fps = makeHUDText(fmt.Sprintf("FPS: %d", n), h.faceSmall)
+	h.fpsVal = n
+}
+
 func (h *HUD) setHealth(hp int) {
 	if h.health != nil && h.healthVal == hp {
 		return
@@ -128,6 +139,15 @@ func (h *HUD) render(shader *Shader, screenW, screenH float32) {
 		cx := -1 + ndcW/2 + hudMargin
 		cy := -1 + ndcH/2 + hudMargin
 		h.drawText(shader, h.health, cx, cy, screenW, screenH)
+	}
+
+	// FPS counter: top-right.
+	if h.fps != nil {
+		ndcW := float32(h.fps.imgW) / screenW * 2
+		ndcH := float32(h.fps.imgH) / screenH * 2
+		cx := 1 - ndcW/2 - hudMargin
+		cy := 1 - ndcH/2 - hudMargin
+		h.drawText(shader, h.fps, cx, cy, screenW, screenH)
 	}
 
 	// Level announcement: top-center.

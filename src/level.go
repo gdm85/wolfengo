@@ -108,15 +108,15 @@ func (g *Game) NewLevel(levelNum uint) (*Level, error) {
 
 	l.transform = l.game.NewTransform()
 
-	var fileName string
-	if debugLevelTest {
-		fileName = "levelTest.map"
+	var filePath string
+	if levelNum == 1 && cfgLevelFile != "" {
+		filePath = cfgLevelFile
 	} else {
-		fileName = fmt.Sprintf("level%d.map", levelNum)
+		filePath = fmt.Sprintf("./maps/level%d.map", levelNum)
 	}
 
 	var err error
-	l.level, err = NewMap(fileName)
+	l.level, err = NewMap(filePath)
 	if err != nil {
 		return nil, err
 	}
@@ -258,7 +258,7 @@ func (l *Level) render() {
 
 	l.player.render()
 
-	if debugHitboxes {
+	if cfgDebugHitboxes {
 		for _, monster := range l.monsters {
 			t := &Transform{
 				translation: Vector3f{monster.transform.translation.X - _defaultMonster.sizeX, 0, monster.transform.translation.Z - _defaultMonster.sizeX},

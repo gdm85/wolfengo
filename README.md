@@ -31,12 +31,14 @@ Then you can run:
 bin/wolfengo
 ```
 
-There are some constants in `main.go` that can be toggled to enable further debugging/experimentation.
-
 To build without sound support:
 ```
 make wolfengo-nosound
 ```
+
+# Running
+
+Use `wolfengo -h` to see the list of supported command-line options; you can enable FPS, load specific levels and enable debugging options.
 
 # Controls
 

@@ -2,6 +2,11 @@
 
 package main
 
+var soundMuted bool
+
+func setAudioMuted(muted bool) { soundMuted = muted }
+func toggleAudioMute()         { soundMuted = !soundMuted }
+
 func initAudio() error                              { return nil }
 func shutdownAudio()                                {}
 func updateAudioListener(pos, forward, up Vector3f) {}

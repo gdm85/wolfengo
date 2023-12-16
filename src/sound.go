@@ -19,6 +19,11 @@ import (
 
 const audioSourcePoolSize = 16
 
+var soundMuted bool
+
+func setAudioMuted(muted bool) { soundMuted = muted }
+func toggleAudioMute()         { soundMuted = !soundMuted }
+
 var audio struct {
 	device  *C.ALCdevice
 	context *C.ALCcontext
@@ -88,7 +93,7 @@ func playSound3D(name string, pos Vector3f) {
 }
 
 func playSoundAt(name string, pos Vector3f, positional bool) {
-	if audio.buffers == nil {
+	if soundMuted || audio.buffers == nil {
 		return
 	}
 	buf, err := loadBuffer(name)

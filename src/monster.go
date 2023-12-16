@@ -187,7 +187,7 @@ func (m *Monster) idleUpdate(orientation Vector3f, distance float32) {
 			)
 
 			if playerIntersectVector != nil && (collisionVector == nil || playerIntersectVector.sub(lineStart).length() < collisionVector.sub(lineStart).length()) {
-				if debugMonsters {
+				if cfgDebugMonsters {
 					playerDist := playerIntersectVector.sub(lineStart).length()
 					wallInfo := "no wall"
 					if collisionVector != nil {
@@ -261,7 +261,7 @@ func (m *Monster) attackUpdate(orientation Vector3f, distance float32) {
 		m.material.texture = m.animations[6]
 		if m.canAttack {
 			m.audio.play(SoundMonsterShoot, m.transform.translation)
-			if debugMonsters {
+			if cfgDebugMonsters {
 				fmt.Printf("[monster shoot] pos=(%.2f, %.2f)\n", m.transform.translation.X, m.transform.translation.Z)
 			}
 

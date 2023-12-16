@@ -30,6 +30,8 @@ type Game struct {
 	mouseLocked bool
 
 	timeDelta float64
+
+	muteKeyDown bool
 }
 
 func NewGame() (*Game, error) {
@@ -47,6 +49,17 @@ func (g *Game) input() error {
 	if Window.GetKey(glfw.KeyQ) == glfw.Press {
 		Window.SetShouldClose(true)
 	}
+
+	// M key: toggle mute (rising-edge only)
+	if Window.GetKey(glfw.KeyM) == glfw.Press {
+		if !g.muteKeyDown {
+			g.muteKeyDown = true
+			toggleAudioMute()
+		}
+	} else {
+		g.muteKeyDown = false
+	}
+
 	if g.isRunning {
 		return g.level.input()
 	}

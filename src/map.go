@@ -80,8 +80,8 @@ func NewMap(fileName string) (*Map, error) {
 	return &b, nil
 }
 
-func (m *Map) loadMap(fileName string) error {
-	f, err := os.Open("./maps/" + fileName)
+func (m *Map) loadMap(filePath string) error {
+	f, err := os.Open(filePath)
 	if err != nil {
 		return err
 	}

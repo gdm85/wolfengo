@@ -19,6 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 package main
 
 import (
+	"flag"
 	"fmt"
 	"math/rand"
 	"os"
@@ -31,13 +32,8 @@ import (
 )
 
 const (
-	version        = "0.1.4"
-	debugGL        = true         // extended debugging of GL calls
-	printFPS       = false        // print FPS count every second
-	debugLevelTest = false        // will load 'levelTest.map'
-	frameCap       = float64(250) // cap max framerate to this number of FPS
-	debugHitboxes  = true         // draw monster collision hitboxes
-	debugMonsters  = false        // debug how monsters become alert and shoot
+	version  = "0.1.4"
+	frameCap = float64(250) // cap max framerate to this number of FPS
 )
 
 var (
@@ -79,6 +75,8 @@ func debugCb(
 var shaderVersion = "120"
 
 func main() {
+	flag.Parse()
+
 	fmt.Printf(`WolfenGo v%s, Copyright (C) 2016~2019 gdm85
 https://github.com/gdm85/wolfengo
 WolfenGo comes with ABSOLUTELY NO WARRANTY.
@@ -120,7 +118,7 @@ under GNU/GPLv2 license.`+"\n", version)
 	fmt.Println(gl.GoStr(gl.GetString(gl.VERSION)))
 
 	// temporary workaround until https://github.com/go-gl/gl/issues/40 is addressed
-	if debugGL && runtime.GOOS != "darwin" {
+	if cfgDebugGL && runtime.GOOS != "darwin" {
 		gl.DebugMessageCallback(debugCb, unsafe.Pointer(nil))
 		gl.Enable(gl.DEBUG_OUTPUT)
 	}
@@ -161,6 +159,9 @@ under GNU/GPLv2 license.`+"\n", version)
 
 	if err := initAudio(); err != nil {
 		fmt.Fprintf(os.Stderr, "WARNING: audio init failed: %v\n", err)
+	}
+	if cfgNoSound {
+		setAudioMuted(true)
 	}
 
 	G, err = NewGame()
@@ -206,8 +207,8 @@ under GNU/GPLv2 license.`+"\n", version)
 			}
 
 			if frameCounter >= time.Second {
-				if printFPS {
-					fmt.Printf("%d FPS\n", frames)
+				if cfgPrintFPS {
+					G.level.hud.setFPS(frames)
 				}
 				frames = 0
 				frameCounter -= time.Second
