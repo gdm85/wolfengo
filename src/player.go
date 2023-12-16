@@ -39,6 +39,9 @@ type Player struct {
 	health         int
 	movementVector Vector3f
 
+	prevMouseLeft glfw.Action
+	prevKeyE      glfw.Action
+
 	game *Game
 }
 
@@ -152,20 +155,22 @@ func (p *Player) update() {
 }
 
 func (p *Player) input() error {
-	if Window.GetKey(glfw.KeyE) == glfw.Press {
+	curKeyE := Window.GetKey(glfw.KeyE)
+	if curKeyE == glfw.Press && p.prevKeyE == glfw.Release {
 		err := p.game.level.openDoors(p.camera.pos, true)
 		if err != nil {
 			return err
 		}
 	}
+	p.prevKeyE = curKeyE
 
 	if Window.GetKey(glfw.KeyEscape) == glfw.Press {
 		Window.SetInputMode(glfw.CursorMode, glfw.CursorNormal)
 		p.game.UnlockMouse()
 	}
 
-	// wait for left mouse click to lock the camera to the mouse
-	if Window.GetMouseButton(glfw.MouseButtonLeft) == glfw.Press {
+	curMouseLeft := Window.GetMouseButton(glfw.MouseButtonLeft)
+	if curMouseLeft == glfw.Press && p.prevMouseLeft == glfw.Release {
 		if !p.game.mouseLocked {
 			Window.SetInputMode(glfw.CursorMode, glfw.CursorDisabled)
 			p.game.LockMouse()
@@ -178,6 +183,7 @@ func (p *Player) input() error {
 			p.game.level.checkIntersections(lineStart, lineEnd, true)
 		}
 	}
+	p.prevMouseLeft = curMouseLeft
 
 	p.movementVector = Vector3f{0, 0, 0}
 
