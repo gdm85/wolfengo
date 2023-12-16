@@ -9,6 +9,7 @@ Pull requests are welcome.
 - [x] fix remaining bugs
 - [x] add crosshair
 - [x] add audio effects
+- [x] add minimal HUD
 
 # Build Dependencies
 

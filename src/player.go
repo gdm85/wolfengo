@@ -115,6 +115,7 @@ func (p *Player) damage(amt int) {
 	if p.health > defaultPlayer.maxHealth {
 		p.health = defaultPlayer.maxHealth
 	} else if p.health <= 0 {
+		p.game.level.hud.showGameOver()
 		p.game.isRunning = false
 		fmt.Println("You just died! GAME OVER")
 	}

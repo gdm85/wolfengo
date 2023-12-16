@@ -18,6 +18,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 */
 package main
 
+import "github.com/go-gl/glfw/v3.1/glfw"
+
 type Game struct {
 	level     *Level
 	isRunning bool
@@ -42,6 +44,9 @@ func NewGame() (*Game, error) {
 }
 
 func (g *Game) input() error {
+	if Window.GetKey(glfw.KeyQ) == glfw.Press {
+		Window.SetShouldClose(true)
+	}
 	if g.isRunning {
 		return g.level.input()
 	}
@@ -56,9 +61,10 @@ func (g *Game) update() error {
 }
 
 func (g *Game) render() {
-	if g.isRunning {
-		g.level.render()
-	}
+	// Always render the 3D scene. When !isRunning (game over) update() is
+	// skipped so the scene stays frozen — this gives the "freeze on death" effect.
+	g.level.render()
+	g.level.renderHUD()
 }
 
 func (g *Game) Camera() *Camera {

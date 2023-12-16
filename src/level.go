@@ -55,6 +55,7 @@ type Level struct {
 	whiteMaterial    *Material
 	debugBoxMaterial *Material
 
+	hud  *HUD
 	game *Game // parent game
 }
 
@@ -148,6 +149,11 @@ func (g *Game) NewLevel(levelNum uint) (*Level, error) {
 	l.crosshairMesh = buildCrosshairMesh()
 	l.debugBoxMesh = buildUnitBoxMesh()
 
+	l.hud, err = loadHUD(levelNum)
+	if err != nil {
+		return nil, err
+	}
+
 	return l, nil
 }
 
@@ -188,6 +194,7 @@ func (l *Level) input() error {
 
 func (l *Level) update() error {
 	updateAudioListener(l.player.camera.pos, l.player.camera.forward, l.player.camera.up)
+	l.hud.setHealth(l.player.health)
 
 	for _, door := range l.doors {
 		door.update()
@@ -263,13 +270,18 @@ func (l *Level) render() {
 		}
 	}
 
-	// Crosshair: rendered last in NDC space, ignoring depth buffer
+	// Crosshair: rendered in NDC space, ignoring depth buffer
 	gl.Disable(gl.DEPTH_TEST)
 	var identity Matrix4f
 	identity.initIdentity()
 	l.shader.updateUniforms(identity, l.whiteMaterial)
 	l.crosshairMesh.drawLines()
 	gl.Enable(gl.DEPTH_TEST)
+}
+
+func (l *Level) renderHUD() {
+	l.shader.bind()
+	l.hud.render(l.shader, l.player.camera.width, l.player.camera.height)
 }
 
 func rectCollide(oldPos, newPos, size1, pos2, size2 Vector2f) (result Vector2f) {
