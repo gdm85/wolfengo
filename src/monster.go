@@ -162,6 +162,7 @@ func (m *Monster) idleUpdate(orientation Vector3f, distance float32) {
 		m.canLook = true
 		m.material.texture = m.animations[0]
 	} else {
+		m.material.texture = m.animations[1]
 		if m.canLook {
 			lineStart := Vector2f{m.transform.translation.X, m.transform.translation.Z}
 			castDirection := Vector2f{orientation.X, orientation.Z}
