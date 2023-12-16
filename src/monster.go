@@ -19,6 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 package main
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -169,9 +170,22 @@ func (m *Monster) idleUpdate(orientation Vector3f, distance float32) {
 			lineEnd := lineStart.add(castDirection.mulf(_defaultMonster.shootDistance))
 
 			collisionVector := m.game.level.checkIntersections(lineStart, lineEnd, false)
-			playerIntersectVector := Vector2f{m.game.Camera().pos.X, m.game.Camera().pos.Z}
+			playerIntersectVector := lineIntersectRect(
+				lineStart, lineEnd,
+				Vector2f{m.game.Camera().pos.X, m.game.Camera().pos.Z},
+				Vector2f{defaultPlayer.size, defaultPlayer.size},
+			)
 
-			if collisionVector == nil || playerIntersectVector.sub(lineStart).length() < collisionVector.sub(lineStart).length() {
+			if playerIntersectVector != nil && (collisionVector == nil || playerIntersectVector.sub(lineStart).length() < collisionVector.sub(lineStart).length()) {
+				if debugMonsters {
+					playerDist := playerIntersectVector.sub(lineStart).length()
+					wallInfo := "no wall"
+					if collisionVector != nil {
+						wallInfo = fmt.Sprintf("wall at dist=%.2f", collisionVector.sub(lineStart).length())
+					}
+					fmt.Printf("[monster alert] pos=(%.2f,%.2f) -> player at dist=%.2f (%s)\n",
+						m.transform.translation.X, m.transform.translation.Z, playerDist, wallInfo)
+				}
 				m.state = stateChase
 			}
 
@@ -235,6 +249,10 @@ func (m *Monster) attackUpdate(orientation Vector3f, distance float32) {
 	} else if timeDecimals < 0.75 {
 		m.material.texture = m.animations[6]
 		if m.canAttack {
+			if debugMonsters {
+				fmt.Printf("[monster shoot] pos=(%.2f, %.2f)\n", m.transform.translation.X, m.transform.translation.Z)
+			}
+
 			lineStart := Vector2f{m.transform.translation.X, m.transform.translation.Z}
 			castDirection := Vector2f{orientation.X, orientation.Z}.rotate((random.Float32() - 0.5) * shootAngle)
 			lineEnd := lineStart.add(castDirection.mulf(_defaultMonster.shootDistance))

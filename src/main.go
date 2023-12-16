@@ -37,6 +37,7 @@ const (
 	debugLevelTest = false        // will load 'levelTest.map'
 	frameCap       = float64(250) // cap max framerate to this number of FPS
 	debugHitboxes  = true         // draw monster collision hitboxes
+	debugMonsters  = false        // debug how monsters become alert and shoot
 )
 
 var (

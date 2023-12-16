@@ -402,7 +402,7 @@ func lineIntersect(lineStart1, lineEnd1, lineStart2, lineEnd2 Vector2f) *Vector2
 	a := vector2fCross(distanceBetweenLineStarts, line2) / cross
 	b := vector2fCross(distanceBetweenLineStarts, line1) / cross
 
-	if 0.0 < a && a < 1.0 && 0.0 < b && b < 1.0 {
+	if 0.0 < a && a < 1.0 && 0.0 <= b && b <= 1.0 {
 		result := lineStart1.add(line1.mulf(a))
 		return &result
 	}
