@@ -159,6 +159,10 @@ under GNU/GPLv2 license.`+"\n", version)
 		fatalError(err)
 	}
 
+	if err := initAudio(); err != nil {
+		fmt.Fprintf(os.Stderr, "WARNING: audio init failed: %v\n", err)
+	}
+
 	G, err = NewGame()
 	if err != nil {
 		fatalError(err)
@@ -222,5 +226,6 @@ under GNU/GPLv2 license.`+"\n", version)
 	}
 
 Exit:
+	shutdownAudio()
 	Window.Destroy()
 }

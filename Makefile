@@ -10,6 +10,9 @@ all: wolfengo test
 wolfengo: gl
 	go build -o bin/wolfengo ./src
 
+wolfengo-nosound: gl
+	go build -tags nosound -o bin/wolfengo ./src
+
 gl:
 	go run src/gl/generate/generate.go $(GL_VER) > src/gl/gl.go
 	gofmt -w src/gl/gl.go
@@ -20,4 +23,4 @@ errcheck:
 test:
 	go test ./src
 
-.PHONY: all wolfengo test errcheck gl
+.PHONY: all wolfengo wolfengo-nosound test errcheck gl

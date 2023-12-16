@@ -20,7 +20,6 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 
 	"github.com/go-gl/glfw/v3.1/glfw"
 )
@@ -107,6 +106,9 @@ func (g *Game) NewPlayer(position Vector3f, playerMesh Mesh, gunMaterial *Materi
 }
 
 func (p *Player) damage(amt int) {
+	if amt > 0 {
+		playSound(SoundPlayerPain)
+	}
 	p.health -= amt
 
 	// as this function is used to give health too, check for maximum overflow
@@ -116,12 +118,10 @@ func (p *Player) damage(amt int) {
 		p.game.isRunning = false
 		fmt.Println("You just died! GAME OVER")
 	}
-	// this println was in original clone
-	fmt.Println("player health =", p.health)
 }
 
 func getPlayerDamage() int {
-	return rand.Intn(defaultPlayer.damageMax-defaultPlayer.damageMin) + defaultPlayer.damageMin
+	return random.Intn(defaultPlayer.damageMax-defaultPlayer.damageMin) + defaultPlayer.damageMin
 }
 
 func (p *Player) update() {
@@ -181,6 +181,7 @@ func (p *Player) input() error {
 			lineEnd := lineStart.add(castDirection.mulf(defaultPlayer.shootDistance))
 
 			p.game.level.checkIntersections(lineStart, lineEnd, true)
+			playSound(SoundGunshot)
 		}
 	}
 	p.prevMouseLeft = curMouseLeft

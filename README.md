@@ -8,14 +8,16 @@ Pull requests are welcome.
 - [x] initial conversion
 - [x] fix remaining bugs
 - [x] add crosshair
-- [ ] add audio effects
+- [x] add audio effects
 
 # Build Dependencies
 
 WolfenGo uses glfw C bindings, which in turn need some Linux userland headers to be installed. Example of dependencies installation on a Debian-based system:
 ```
-apt-get install libgl1-mesa-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libxxf86vm-dev
+apt-get install libgl1-mesa-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libxxf86vm-dev libopenal-dev
 ```
+
+If you wish to build without sound support then you can skip `libopenal-dev`.
 
 # Building
 
@@ -29,6 +31,11 @@ bin/wolfengo
 ```
 
 There are some constants in `main.go` that can be toggled to enable further debugging/experimentation.
+
+To build without sound support:
+```
+make wolfengo-nosound
+```
 
 # Controls
 

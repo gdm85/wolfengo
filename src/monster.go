@@ -121,6 +121,7 @@ type Monster struct {
 	deathTime  time.Time
 	animations []*Texture
 	mesh       Mesh
+	audio      monsterSource // dedicated OpenAL source owned by this monster
 
 	game *Game
 }
@@ -135,8 +136,13 @@ func (g *Game) NewMonster(t *Transform, animations []*Texture) *Monster {
 	m.health = _defaultMonster.maxHealth
 	m.animations = animations
 	m.material = NewMaterial(m.animations[0])
+	m.audio = newMonsterSource()
 
 	return &m
+}
+
+func (m *Monster) free() {
+	m.audio.free()
 }
 
 func (m *Monster) damage(amt int) {
@@ -148,6 +154,10 @@ func (m *Monster) damage(amt int) {
 
 	if m.health <= 0 {
 		m.state = stateDying
+		m.audio.play(SoundMonsterDeath, m.transform.translation)
+	} else {
+		variant := fmt.Sprintf("%s%d", SoundMonsterPainBase, random.Intn(SoundMonsterPainCount)+1)
+		m.audio.playIfFree(variant, m.transform.translation)
 	}
 }
 
@@ -187,6 +197,7 @@ func (m *Monster) idleUpdate(orientation Vector3f, distance float32) {
 						m.transform.translation.X, m.transform.translation.Z, playerDist, wallInfo)
 				}
 				m.state = stateChase
+				m.audio.play(SoundMonsterAlert, m.transform.translation)
 			}
 
 			m.canLook = false
@@ -249,6 +260,7 @@ func (m *Monster) attackUpdate(orientation Vector3f, distance float32) {
 	} else if timeDecimals < 0.75 {
 		m.material.texture = m.animations[6]
 		if m.canAttack {
+			m.audio.play(SoundMonsterShoot, m.transform.translation)
 			if debugMonsters {
 				fmt.Printf("[monster shoot] pos=(%.2f, %.2f)\n", m.transform.translation.X, m.transform.translation.Z)
 			}

@@ -38,6 +38,7 @@ type Door struct {
 	openPosition, closePosition                             Vector3f
 	isOpening                                               bool
 	openingStartTime, openTime, closingStartTime, closeTime time.Time
+	closeSoundPlayed                                        bool
 
 	game *Game
 }
@@ -99,6 +100,8 @@ func (d *Door) open() {
 		return
 	}
 
+	playSound3D(SoundDoorOpen, d.transform.translation)
+	d.closeSoundPlayed = false
 	d.openingStartTime = time.Now()
 	d.openTime = d.openingStartTime.Add(timeToOpen)
 	d.closingStartTime = d.openTime.Add(closeDelay)
@@ -126,6 +129,10 @@ func (d *Door) update() {
 		} else if now.Before(d.closingStartTime) {
 			d.transform.translation = d.openPosition
 		} else if now.Before(d.closeTime) {
+			if !d.closeSoundPlayed {
+				playSound3D(SoundDoorClose, d.transform.translation)
+				d.closeSoundPlayed = true
+			}
 			d.transform.translation = vectorLerp(d.openPosition, d.closePosition, getIncrements(now, d.closingStartTime, timeToOpen))
 		} else {
 			d.transform.translation = d.closePosition

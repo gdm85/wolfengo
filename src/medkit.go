@@ -88,6 +88,7 @@ func (m *Medkit) update() {
 		if m.game.level.player.health < defaultPlayer.maxHealth {
 			m.game.level.removeMedkit(m)
 			m.game.level.player.damage(-healAmount)
+			playSound(SoundMedkitPickup)
 		}
 	}
 }

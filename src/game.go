@@ -66,6 +66,10 @@ func (g *Game) Camera() *Camera {
 }
 
 func (g *Game) loadNextLevel() error {
+	if g.level != nil {
+		playSound(SoundTeleport)
+		g.level.free()
+	}
 	var err error
 	g.levelNum++
 	g.level, err = g.NewLevel(g.levelNum)

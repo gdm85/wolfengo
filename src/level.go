@@ -151,6 +151,12 @@ func (g *Game) NewLevel(levelNum uint) (*Level, error) {
 	return l, nil
 }
 
+func (l *Level) free() {
+	for _, m := range l.monsters {
+		m.free()
+	}
+}
+
 func (l *Level) openDoors(position Vector3f, tryExitLevel bool) error {
 	for _, door := range l.doors {
 		if door.transform.translation.sub(position).length() < openDistance {
@@ -181,6 +187,8 @@ func (l *Level) input() error {
 }
 
 func (l *Level) update() error {
+	updateAudioListener(l.player.camera.pos, l.player.camera.forward, l.player.camera.up)
+
 	for _, door := range l.doors {
 		door.update()
 	}
