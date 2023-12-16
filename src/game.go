@@ -42,7 +42,10 @@ func NewGame() (*Game, error) {
 }
 
 func (g *Game) input() error {
-	return g.level.input()
+	if g.isRunning {
+		return g.level.input()
+	}
+	return nil
 }
 
 func (g *Game) update() error {
