@@ -21,6 +21,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"time"
 
 	"github.com/gdm85/wolfengo/src/gl"
 )
@@ -54,6 +55,9 @@ type Level struct {
 	debugBoxMesh     Mesh
 	whiteMaterial    *Material
 	debugBoxMaterial *Material
+	redMaterial      *Material
+
+	damageFlashUntil time.Time
 
 	hud  *HUD
 	game *Game // parent game
@@ -146,6 +150,10 @@ func (g *Game) NewLevel(levelNum uint) (*Level, error) {
 	l.debugBoxMaterial = NewMaterial(redTex)
 	l.debugBoxMaterial.color = Vector3f{1, 0.15, 0}
 
+	damageFlashTex := NewTransparentTexture(51) // 20% opacity (51/255)
+	l.redMaterial = NewMaterial(damageFlashTex)
+	l.redMaterial.color = Vector3f{1, 0, 0}
+
 	l.crosshairMesh = buildCrosshairMesh()
 	l.debugBoxMesh = buildUnitBoxMesh()
 
@@ -186,6 +194,10 @@ func (l *Level) openDoors(position Vector3f, tryExitLevel bool) error {
 
 func (l *Level) damagePlayer(amt int) {
 	l.player.damage(amt)
+}
+
+func (l *Level) showDamageFlash() {
+	l.damageFlashUntil = time.Now().Add(250 * time.Millisecond)
 }
 
 func (l *Level) input() error {
@@ -281,6 +293,22 @@ func (l *Level) render() {
 
 func (l *Level) renderHUD() {
 	l.shader.bind()
+
+	// Render red damage flash overlay if active
+	if time.Now().Before(l.damageFlashUntil) {
+		gl.Disable(gl.DEPTH_TEST)
+
+		// Create a full-screen quad in NDC space
+		var identity Matrix4f
+		identity.initIdentity()
+		identity.initScale(2, 2, 1) // Scale to cover entire screen
+
+		l.shader.updateUniforms(identity, l.redMaterial)
+		l.hud.quadMesh.draw()
+
+		gl.Enable(gl.DEPTH_TEST)
+	}
+
 	l.hud.render(l.shader, l.player.camera.width, l.player.camera.height)
 }
 

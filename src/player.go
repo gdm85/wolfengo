@@ -108,6 +108,7 @@ func (g *Game) NewPlayer(position Vector3f, playerMesh Mesh, gunMaterial *Materi
 func (p *Player) damage(amt int) {
 	if amt > 0 {
 		playSound(SoundPlayerPain)
+		p.game.level.showDamageFlash()
 	}
 	p.health -= amt
 
