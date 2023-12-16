@@ -88,6 +88,24 @@ func (m Mesh) draw() {
 	gl.DisableVertexAttribArray(2)
 }
 
+func (m Mesh) drawLines() {
+	gl.EnableVertexAttribArray(0)
+	gl.EnableVertexAttribArray(1)
+	gl.EnableVertexAttribArray(2)
+
+	gl.BindBuffer(gl.ARRAY_BUFFER, m.vbo)
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, VertexSize*4, gl.PtrOffset(0))
+	gl.VertexAttribPointer(1, 2, gl.FLOAT, false, VertexSize*4, gl.PtrOffset(12))
+	gl.VertexAttribPointer(2, 3, gl.FLOAT, false, VertexSize*4, gl.PtrOffset(20))
+
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, m.ibo)
+	gl.DrawElements(gl.LINES, m.size, gl.UNSIGNED_INT, gl.PtrOffset(0))
+
+	gl.DisableVertexAttribArray(0)
+	gl.DisableVertexAttribArray(1)
+	gl.DisableVertexAttribArray(2)
+}
+
 func (m Mesh) calcNormals(vertices []*Vertex, indices []int32) {
 	for i := 0; i < len(indices); i += 3 {
 		i0, i1, i2 := indices[i], indices[i+1], indices[i+2]

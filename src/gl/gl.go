@@ -29,6 +29,7 @@ const (
 	ELEMENT_ARRAY_BUFFER = gl.ELEMENT_ARRAY_BUFFER
 	STATIC_DRAW          = gl.STATIC_DRAW
 	FLOAT                = gl.FLOAT
+	LINES                = gl.LINES
 	TRIANGLES            = gl.TRIANGLES
 	UNSIGNED_INT         = gl.UNSIGNED_INT
 	INFO_LOG_LENGTH      = gl.INFO_LOG_LENGTH
@@ -54,6 +55,7 @@ var (
 	GetString                = gl.GetString
 	DebugMessageCallback     = gl.DebugMessageCallback
 	Enable                   = gl.Enable
+	Disable                  = gl.Disable
 	ClearColor               = gl.ClearColor
 	FrontFace                = gl.FrontFace
 	CullFace                 = gl.CullFace

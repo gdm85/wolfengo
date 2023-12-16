@@ -50,6 +50,11 @@ type Level struct {
 	exitPoints                         []*Vector3f
 	collisionPosStart, collisionPosEnd []*Vector2f
 
+	crosshairMesh    Mesh
+	debugBoxMesh     Mesh
+	whiteMaterial    *Material
+	debugBoxMaterial *Material
+
 	game *Game // parent game
 }
 
@@ -131,6 +136,17 @@ func (g *Game) NewLevel(levelNum uint) (*Level, error) {
 	if l.player == nil {
 		return nil, fmt.Errorf("invalid generated level: no player set")
 	}
+
+	whiteTex := NewWhiteTexture()
+	l.whiteMaterial = NewMaterial(whiteTex)
+	l.whiteMaterial.color = Vector3f{1, 1, 1}
+
+	redTex := NewWhiteTexture()
+	l.debugBoxMaterial = NewMaterial(redTex)
+	l.debugBoxMaterial.color = Vector3f{1, 0.15, 0}
+
+	l.crosshairMesh = buildCrosshairMesh()
+	l.debugBoxMesh = buildUnitBoxMesh()
 
 	return l, nil
 }
@@ -225,6 +241,26 @@ func (l *Level) render() {
 	}
 
 	l.player.render()
+
+	if debugHitboxes {
+		for _, monster := range l.monsters {
+			t := &Transform{
+				translation: Vector3f{monster.transform.translation.X, 0, monster.transform.translation.Z},
+				scale:       Vector3f{defaultMonsterSize.X, _defaultMonster.scale, defaultMonsterSize.Y},
+				game:        l.game,
+			}
+			l.shader.updateUniforms(t.getProjectedTransformation(l.player.camera), l.debugBoxMaterial)
+			l.debugBoxMesh.drawLines()
+		}
+	}
+
+	// Crosshair: rendered last in NDC space, ignoring depth buffer
+	gl.Disable(gl.DEPTH_TEST)
+	var identity Matrix4f
+	identity.initIdentity()
+	l.shader.updateUniforms(identity, l.whiteMaterial)
+	l.crosshairMesh.drawLines()
+	gl.Enable(gl.DEPTH_TEST)
 }
 
 func rectCollide(oldPos, newPos, size1, pos2, size2 Vector2f) (result Vector2f) {
@@ -303,7 +339,7 @@ func (l *Level) checkIntersections(lineStart, lineEnd Vector2f, hurtMonsters boo
 
 			nearestMonsterIntersect = findNearestVector2f(nearestMonsterIntersect, collisionVector, lineStart)
 
-			if nearestMonsterIntersect == collisionVector {
+			if collisionVector != nil && nearestMonsterIntersect == collisionVector {
 				nearestMonster = monster
 			}
 		}
@@ -348,7 +384,7 @@ func vector2fCross(a, b Vector2f) float32 {
 	return a.X*b.Y - a.Y*b.X
 }
 
-//http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
+// http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
 func lineIntersect(lineStart1, lineEnd1, lineStart2, lineEnd2 Vector2f) *Vector2f {
 	line1 := lineEnd1.sub(lineStart1)
 	line2 := lineEnd2.sub(lineStart2)
@@ -370,6 +406,53 @@ func lineIntersect(lineStart1, lineEnd1, lineStart2, lineEnd2 Vector2f) *Vector2
 	}
 
 	return nil
+}
+
+// buildCrosshairMesh creates a line-based + crosshair in NDC space.
+// The window is 800x600, so 1px = 2/800 NDC in X and 2/600 NDC in Y.
+// Arms are ~10px long with a ~3px gap around the centre.
+func buildCrosshairMesh() Mesh {
+	const (
+		hOuter = float32(0.025)  // 10px in X (NDC)
+		hInner = float32(0.0075) // 3px gap in X (NDC)
+		vOuter = float32(0.033)  // 10px in Y (NDC)
+		vInner = float32(0.010)  // 3px gap in Y (NDC)
+	)
+	verts := []*Vertex{
+		{pos: Vector3f{-hOuter, 0, 0}}, // 0 left end
+		{pos: Vector3f{-hInner, 0, 0}}, // 1 inner left
+		{pos: Vector3f{hInner, 0, 0}},  // 2 inner right
+		{pos: Vector3f{hOuter, 0, 0}},  // 3 right end
+		{pos: Vector3f{0, vOuter, 0}},  // 4 top end
+		{pos: Vector3f{0, vInner, 0}},  // 5 inner top
+		{pos: Vector3f{0, -vInner, 0}}, // 6 inner bottom
+		{pos: Vector3f{0, -vOuter, 0}}, // 7 bottom end
+	}
+	// Four line segments: left arm, right arm, top arm, bottom arm
+	indices := []int32{0, 1, 2, 3, 4, 5, 6, 7}
+	return NewMesh(verts, indices, false)
+}
+
+// buildUnitBoxMesh creates a wireframe unit cube (0..1 in XYZ).
+// Scale/translate the resulting transform to position hitboxes.
+func buildUnitBoxMesh() Mesh {
+	verts := []*Vertex{
+		{pos: Vector3f{0, 0, 0}}, // 0 bottom
+		{pos: Vector3f{1, 0, 0}}, // 1
+		{pos: Vector3f{1, 0, 1}}, // 2
+		{pos: Vector3f{0, 0, 1}}, // 3
+		{pos: Vector3f{0, 1, 0}}, // 4 top
+		{pos: Vector3f{1, 1, 0}}, // 5
+		{pos: Vector3f{1, 1, 1}}, // 6
+		{pos: Vector3f{0, 1, 1}}, // 7
+	}
+	// Bottom ring, top ring, 4 vertical pillars — 12 edges = 24 indices
+	indices := []int32{
+		0, 1, 1, 2, 2, 3, 3, 0, // bottom
+		4, 5, 5, 6, 6, 7, 7, 4, // top
+		0, 4, 1, 5, 2, 6, 3, 7, // verticals
+	}
+	return NewMesh(verts, indices, false)
 }
 
 func (l *Level) generate() error {

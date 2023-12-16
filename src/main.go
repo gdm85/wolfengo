@@ -33,9 +33,10 @@ import (
 const (
 	version        = "0.1.4"
 	debugGL        = true         // extended debugging of GL calls
-	printFPS       = true         // print FPS count every second
+	printFPS       = false        // print FPS count every second
 	debugLevelTest = false        // will load 'levelTest.map'
 	frameCap       = float64(250) // cap max framerate to this number of FPS
+	debugHitboxes  = true         // draw monster collision hitboxes
 )
 
 var (

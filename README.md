@@ -7,6 +7,7 @@ Pull requests are welcome.
 ## Plan
 - [x] initial conversion
 - [x] fix remaining bugs
+- [x] add crosshair
 - [ ] add audio effects
 
 # Build Dependencies

@@ -110,6 +110,19 @@ func loadTexture(fileName string) (uint32, error) {
 	return texture, nil
 }
 
+func NewWhiteTexture() *Texture {
+	t := &Texture{}
+	gl.GenTextures(1, &t.ID)
+	gl.BindTexture(gl.TEXTURE_2D, t.ID)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
+	gl.TexParameterf(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+	gl.TexParameterf(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+	data := []byte{255, 255, 255, 255}
+	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, gl.Ptr(data))
+	return t
+}
+
 func (t *Texture) bind() {
 	gl.BindTexture(gl.TEXTURE_2D, t.ID)
 }
