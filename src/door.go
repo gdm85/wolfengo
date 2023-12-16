@@ -120,6 +120,20 @@ func vectorLerp(startPos, endPos Vector3f, lerpFactor float32) Vector3f {
 	return startPos.add(endPos.sub(startPos).mulf(lerpFactor))
 }
 
+// isPlayerInPath returns true when the player's XZ position overlaps the door's
+// closed-position bounding box (with a small buffer so the check triggers before
+// the door physically touches the player).
+func (d *Door) isPlayerInPath() bool {
+	p := d.game.Camera().pos
+	buf := float32(defaultPlayer.size)
+	size := d.getSize()
+	// Use the close position as the canonical door origin for the AABB check,
+	// since that is where the door will be once fully shut.
+	origin := Vector2f{d.closePosition.X, d.closePosition.Z}
+	return p.X >= origin.X-buf && p.X <= origin.X+size.X+buf &&
+		p.Z >= origin.Y-buf && p.Z <= origin.Y+size.Y+buf
+}
+
 func (d *Door) update() {
 	if d.isOpening {
 		now := time.Now()
@@ -128,12 +142,27 @@ func (d *Door) update() {
 			d.transform.translation = vectorLerp(d.closePosition, d.openPosition, getIncrements(now, d.openingStartTime, timeToOpen))
 		} else if now.Before(d.closingStartTime) {
 			d.transform.translation = d.openPosition
-		} else if now.Before(d.closeTime) {
-			if !d.closeSoundPlayed {
-				playSound3D(SoundDoorClose, d.transform.translation)
-				d.closeSoundPlayed = true
+			// If the player is standing in the doorway, keep resetting the
+			// close-delay so the door never starts moving into them.
+			if d.isPlayerInPath() {
+				d.closingStartTime = now.Add(closeDelay)
+				d.closeTime = d.closingStartTime.Add(timeToOpen)
 			}
-			d.transform.translation = vectorLerp(d.openPosition, d.closePosition, getIncrements(now, d.closingStartTime, timeToOpen))
+		} else if now.Before(d.closeTime) {
+			// If the player walks into the path while the door is closing,
+			// snap back to fully open and restart the close delay.
+			if d.isPlayerInPath() {
+				d.closeSoundPlayed = false
+				d.closingStartTime = now.Add(closeDelay)
+				d.closeTime = d.closingStartTime.Add(timeToOpen)
+				d.transform.translation = d.openPosition
+			} else {
+				if !d.closeSoundPlayed {
+					playSound3D(SoundDoorClose, d.transform.translation)
+					d.closeSoundPlayed = true
+				}
+				d.transform.translation = vectorLerp(d.openPosition, d.closePosition, getIncrements(now, d.closingStartTime, timeToOpen))
+			}
 		} else {
 			d.transform.translation = d.closePosition
 			d.isOpening = false
